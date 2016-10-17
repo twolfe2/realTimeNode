@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>9.html</title>
+</head>
+<body>
+  <h1>9.html</h1>
+  <p id="hello"></p>
+  <input type="text" id="input">
+  <button id="submit">Submit</button>
+  <p id="messages"></p>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect("/");
+    var hello = document.querySelector('#hello')
+    socket.on("connected", function() {
+      console.log("connected");
+    })
+
+    socket.on('hello', function(data) {
+      hello.innerHTML = data;
+    })
+
+
+    socket.on("disconnect", function() {
+    console.log('Server diconnected');
+    })
+
+    var send = document.getElementById('submit');
+    var input = document.getElementById('input');
+
+
+    send.addEventListener('click', function() {
+      console.log('button clicked', input.value );
+      document.getElementById('messages').innerHTML += input.value + "<br/>"
+      socket.emit('submit', input.value )
+    })
+
+    socket.on('recieved', function(data) {
+      document.getElementById('messages').innerHTML += data + "<br/>"
+    })
+  </script>
+</body>
+</html>
